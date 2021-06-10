@@ -61,8 +61,27 @@ async function waitForInstanceRunning(ec2InstanceId) {
   }
 }
 
+
+async function waitForInstanceTerminated() {
+    const ec2 = new AWS.EC2();
+
+    const params = {
+        ImageId: config.input.ec2ImageId,
+    };
+
+    try {
+        await ec2.waitFor('instanceTerminated', params).promise();
+        core.info(`Previous AWS EC2 instance was terminated`);
+        return;
+    } catch (error) {
+        core.error(`AWS EC2 instance termination error`);
+        throw error;
+    }
+}
+
 module.exports = {
-  startEc2Instance,
-  terminateEc2Instance,
-  waitForInstanceRunning,
+    startEc2Instance,
+    terminateEc2Instance,
+    waitForInstanceRunning,
+    waitForInstanceTerminated
 };
