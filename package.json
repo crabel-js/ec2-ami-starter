@@ -5,11 +5,7 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git@github.com:machulav/ec2-github-runner.git"
-  },
-  "homepage": "https://github.com/machulav/ec2-github-runner#readme",
-  "bugs": {
-    "url": "https://github.com/machulav/ec2-github-runner/issues"
+    "url": "git@github.com:crabel-js/ec2-ami-starter.git"
   },
   "scripts": {
     "index": "node -r dotenv/config ./src/index.js",
