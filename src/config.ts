@@ -1,7 +1,7 @@
 import * as core from '@actions/core';
 import {ImageId, InstanceType, SubnetId, SecurityGroupId} from 'aws-sdk/clients/ec2';
 import {InstanceId, TagSpecificationList} from 'aws-sdk/clients/ec2';
-import {Context} from "@actions/github/lib/context";
+import * as github from "@actions/github";
 
 type ConfigOptions = {
     mode: string;
@@ -16,11 +16,16 @@ type ConfigOptions = {
     githubToken?: string;
 }
 
+type GitHubContext = {
+    owner: string;
+    repo: string;
+}
+
 class Config {
 
     public input: ConfigOptions;
     public tagSpecifications: TagSpecificationList;
-    public githubContext: Context;
+    public githubContext: GitHubContext;
 
     constructor() {
         this.input = {
@@ -39,6 +44,11 @@ class Config {
         if (tags.length > 0) {
             this.tagSpecifications = [{ResourceType: 'instance', Tags: tags}, {ResourceType: 'volume', Tags: tags}];
         }
+
+        this.githubContext = {
+            owner: github.context.repo.owner,
+            repo: github.context.repo.repo,
+        };
 
         //
         // validate input
