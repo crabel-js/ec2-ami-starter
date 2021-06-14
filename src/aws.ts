@@ -18,7 +18,7 @@ export async function startEc2Instance(label: string, githubRegistrationToken: s
         'cd actions-runner',
         'export RUNNER_ALLOW_RUNASROOT=1',
         'export DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=1',
-        configCmd,
+        configCmd + " | tee stdout.txt",
         './run.sh',
     ];
 
