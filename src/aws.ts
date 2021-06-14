@@ -14,7 +14,7 @@ export async function startEc2Instance(label: string, githubRegistrationToken: s
         'cd actions-runner',
         'export RUNNER_ALLOW_RUNASROOT=1',
         'export DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=1',
-        `./config.sh --url https://github.com/${config.githubContext.owner}/${config.githubContext.repo} --token ${githubRegistrationToken} --labels ${label}`,
+        `./config.sh --name $(hostname -s) --work _work --url https://github.com/${config.githubContext.owner}/${config.githubContext.repo} --token ${githubRegistrationToken} --labels ${label}`,
         './run.sh',
     ];
 
