@@ -15,10 +15,10 @@ export async function startEc2Instance(label: string, githubRegistrationToken: s
     // Docker and git are necessary for GitHub runner and should be pre-installed on the AMI.
     const userData = [
         '#!/bin/bash',
-        'cd actions-runner',
+        'cd /root/actions-runner',
         'export RUNNER_ALLOW_RUNASROOT=1',
         'export DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=1',
-        configCmd + " | tee stdout.txt",
+        configCmd,
         './run.sh',
     ];
 
