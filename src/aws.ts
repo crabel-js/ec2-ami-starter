@@ -7,10 +7,6 @@ import {config} from './config';
 export async function startEc2Instance(label: string, githubRegistrationToken: string) {
     const ec2 = new EC2();
 
-    const configCmd = `./config.sh --name $(hostname -s) --work _work --url https://github.com/${config.githubContext.owner}/${config.githubContext.repo} --token ${githubRegistrationToken} --labels ${label}`;
-
-    core.info("Config Command: " + configCmd);
-
     // User data scripts are run as the root user.
     // Docker and git are necessary for GitHub runner and should be pre-installed on the AMI.
     const userData = [
@@ -18,7 +14,12 @@ export async function startEc2Instance(label: string, githubRegistrationToken: s
         'cd /root/actions-runner',
         'export RUNNER_ALLOW_RUNASROOT=1',
         'export DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=1',
-        configCmd,
+        `./config.sh ` +
+            `--name $(hostname -s) ` +
+            `--work _work ` +
+            `--url https://github.com/${config.githubContext.owner}/${config.githubContext.repo} ` +
+            `--token ${githubRegistrationToken} ` +
+            `--labels ${label}`,
         './run.sh',
     ];
 
