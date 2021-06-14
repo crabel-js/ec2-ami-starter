@@ -2,7 +2,7 @@ import {EC2} from 'aws-sdk';
 import {InstanceId, DescribeInstancesRequest} from 'aws-sdk/clients/ec2';
 import {RunInstancesRequest} from "aws-sdk/clients/ec2";
 import * as core from '@actions/core';
-import * as config from './config';
+import {config} from './config';
 
 export async function startEc2Instance(label: string, githubRegistrationToken: string) {
     const ec2 = new EC2();

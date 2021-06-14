@@ -1,6 +1,7 @@
 import * as core from '@actions/core';
 import {ImageId, InstanceType, SubnetId, SecurityGroupId} from 'aws-sdk/clients/ec2';
 import {InstanceId, TagSpecificationList} from 'aws-sdk/clients/ec2';
+import {Context} from "@actions/github/lib/context";
 
 type ConfigOptions = {
     mode: string;
@@ -11,12 +12,15 @@ type ConfigOptions = {
     label?: string;
     ec2InstanceId?: InstanceId;
     iamRoleName?: string;
+    //
+    githubToken?: string;
 }
 
 class Config {
 
     public input: ConfigOptions;
     public tagSpecifications: TagSpecificationList;
+    public githubContext: Context;
 
     constructor() {
         this.input = {
@@ -63,9 +67,13 @@ class Config {
   }
 }
 
+export let config: Config;
+
 try {
-  module.exports = new Config();
-} catch (error) {
-  core.error(error);
-  core.setFailed(error.message);
+    config = new Config();
 }
+catch (error) {
+    core.error(error);
+    core.setFailed(error.message);
+}
+
