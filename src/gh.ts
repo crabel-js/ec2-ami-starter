@@ -3,22 +3,9 @@ import * as github from '@actions/github';
 import * as _ from 'lodash';
 import {config} from './config';
 
-// use the unique label to find the runner
-// as we don't have the runner's id, it's not possible to get it in any other way
-async function getRunner(label) {
-    const octokit = github.getOctokit(config.input.githubToken);
-
-    try {
-        const response = await octokit.request('GET /repos/{owner}/{repo}/actions/runners', config.githubContext);
-        const foundRunners = _.filter(response.data.runners, { labels: [{ name: label }] });
-        return foundRunners.length > 0 ? foundRunners[0] : null;
-    } catch (error) {
-        return null;
-    }
-}
 
 // get GitHub Registration Token for registering a self-hosted runner
-async function getRegistrationToken() {
+export async function getRegistrationToken(): Promise<string> {
     const octokit = github.getOctokit(config.input.githubToken);
 
     try {
@@ -31,7 +18,7 @@ async function getRegistrationToken() {
     }
 }
 
-async function removeRunner() {
+export async function removeRunner(): Promise<void> {
     const runner = await getRunner(config.input.label);
     const octokit = github.getOctokit(config.input.githubToken);
 
@@ -51,7 +38,7 @@ async function removeRunner() {
     }
 }
 
-async function waitForRunnerRegistered(label) {
+export async function waitForRunnerRegistered(label): Promise<void> {
     const timeoutMinutes = 5;
     const retryIntervalSeconds = 10;
     const quietPeriodSeconds = 30;
@@ -61,7 +48,7 @@ async function waitForRunnerRegistered(label) {
     await new Promise(r => setTimeout(r, quietPeriodSeconds * 1000));
     core.info(`Checking every ${retryIntervalSeconds}s if the GitHub self-hosted runner is registered`);
 
-    return new Promise((resolve, reject) => {
+    return new Promise<void>((resolve, reject) => {
         const interval = setInterval(async () => {
             const runner = await getRunner(label);
 
@@ -83,8 +70,18 @@ async function waitForRunnerRegistered(label) {
     });
 }
 
-module.exports = {
-    getRegistrationToken,
-    removeRunner,
-    waitForRunnerRegistered,
-};
+//
+
+// use the unique label to find the runner
+// as we don't have the runner's id, it's not possible to get it in any other way
+async function getRunner(label) {
+    const octokit = github.getOctokit(config.input.githubToken);
+
+    try {
+        const response = await octokit.request('GET /repos/{owner}/{repo}/actions/runners', config.githubContext);
+        const foundRunners = _.filter(response.data.runners, { labels: [{ name: label }] });
+        return foundRunners.length > 0 ? foundRunners[0] : null;
+    } catch (error) {
+        return null;
+    }
+}
