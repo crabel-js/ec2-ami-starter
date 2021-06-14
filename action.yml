@@ -1,6 +1,6 @@
 name: On-demand self-hosted AWS EC2 runner for GitHub Actions
 description: GitHub Action for automatic creation and registration AWS EC2 instance as a GitHub Actions self-hosted runner.
-author: Volodymyr Machula / Carlos Galavis
+author: Volodymyr Machula
 branding:
   icon: 'box'
   color: 'orange'
@@ -11,6 +11,10 @@ inputs:
         - 'start' - to start a new runner;
         - 'stop' - to stop the previously created runner.
     required: true
+  github-token:
+    description: >-
+      GitHub Personal Access Token with the 'repo' scope assigned.
+    required: true
   ec2-image-id:
     description: >-
       EC2 Image Id (AMI). The new runner will be launched from this image.
@@ -18,7 +22,7 @@ inputs:
     required: false
   ec2-instance-type:
     description: >-
-      EC2 Instance Type. 
+      EC2 Instance Type.
       This input is required if you use the 'start' mode.
     required: false
   subnet-id:
@@ -28,7 +32,7 @@ inputs:
     required: false
   security-group-id:
     description: >-
-      EC2 Security Group Id. 
+      EC2 Security Group Id.
       The security group should belong to the same VPC as the specified subnet.
       The runner doesn't require any inbound traffic. However, outbound traffic should be allowed.
       This input is required if you use the 'start' mode.
@@ -58,6 +62,12 @@ inputs:
     required: false
     default: '[]'
 outputs:
+  label:
+    description: >-
+      Name of the unique label assigned to the runner.
+      The label is used in two cases:
+      - to use as the input of 'runs-on' property for the following jobs;
+      - to remove the runner from GitHub when it is not needed anymore.
   ec2-instance-id:
     description: >-
       EC2 Instance Id of the created runner.
